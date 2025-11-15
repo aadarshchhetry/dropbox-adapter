@@ -1,3 +1,35 @@
 spring:
   application:
     name: dropbox
+  security:
+    oauth2:
+      client:
+        registration:
+          dbx:
+            client-id: ${EXTERNAL_API_CLIENT_ID}
+            client-secret: ${EXTERNAL_API_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-authentication-method: client_secret_basic
+            scope: account_info.read,sharing.read,team_info.read,team_data.member,members.read,events.read
+        provider:
+          dbx:
+            token-uri: https://api.dropboxapi.com/oauth2/token
+            authorization-uri: https://www.dropbox.com/oauth2/authorize
+            user-info-uri: https://api.dropboxapi.com/2/team/token/get_authenticated_admin
+            user-name-attribute: admin_profile.team_member_id
+
+api:
+  external:
+    base-url: https://api.dropboxapi.com
+    endpoint: /2/team/get_info
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web.client: DEBUG
+    com:
+      example:
+        dropbox: DEBUG
